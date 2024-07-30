@@ -1,11 +1,19 @@
-import { Box, Flex, Grid, GridItem, HStack, Show } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  HStack,
+  Show,
+  Text,
+} from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import GameGrid from "./components/GameGrid";
 import GenreList from "./components/GenreList";
 import { useState } from "react";
 import { Genre } from "./hooks/UseGenres";
 import { Platform } from "./hooks/useGames";
-import Platformselector from "./components/Platfromselector";
+import PlatformSelector from "./components/Platfromselector";
 import SortSelector from "./components/SortSelector";
 import GameHeading from "./components/GameHeading";
 
@@ -17,7 +25,12 @@ export interface GameQuery {
 }
 
 function App() {
-  const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
+  const [gameQuery, setGameQuery] = useState<GameQuery>({
+    genre: null,
+    platform: null,
+    sortOrder: "",
+    searchText: "",
+  });
 
   return (
     <Grid
@@ -48,7 +61,7 @@ function App() {
           <GameHeading gameQuery={gameQuery} />
           <Flex marginBottom={5}>
             <Box marginRight={5}>
-              <Platformselector
+              <PlatformSelector
                 selectedPlatform={gameQuery.platform}
                 onSelectPlatform={(platform) =>
                   setGameQuery({ ...gameQuery, platform })
@@ -63,7 +76,19 @@ function App() {
             />
           </Flex>
         </Box>
-        <GameGrid gameQuery={gameQuery} />
+        {gameQuery.platform?.slug === "playstation" ? (
+          <Box textAlign="center" padding="10px">
+            <Text fontSize="xl" color="red.500">
+              The PlayStation section is currently under maintenance. Please
+              check back later.
+            </Text>
+          </Box>
+        ) : (
+          <GameGrid
+            gameQuery={gameQuery}
+            selectedPlatform={gameQuery.platform}
+          />
+        )}
       </GridItem>
     </Grid>
   );
